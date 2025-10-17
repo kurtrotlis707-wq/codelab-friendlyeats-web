@@ -8,7 +8,7 @@ import {
 } from "@/src/lib/firebase/auth.js";
 import { addFakeRestaurantsAndReviews } from "@/src/lib/firebase/firestore.js";
 import { setCookie, deleteCookie } from "cookies-next";
-
+// log in to make user changes
 function useUserSession(initialUser) {
   useEffect(() => {
     return onIdTokenChanged(async (user) => {
@@ -27,7 +27,7 @@ function useUserSession(initialUser) {
 
   return initialUser;
 }
-
+// eventlistener clicks sign in/out
 export default function Header({ initialUser }) {
   const user = useUserSession(initialUser);
 

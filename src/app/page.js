@@ -16,10 +16,12 @@ export default async function Home(props) {
   // Using seachParams which Next.js provides, allows the filtering to happen on the server-side, for example:
   // ?city=London&category=Indian&sort=Review
   const { firebaseServerApp } = await getAuthenticatedAppForUser();
+  //pulls reasturant data fron the db
   const restaurants = await getRestaurants(
     getFirestore(firebaseServerApp),
     searchParams
   );
+  // display resturant info
   return (
     <main className="main__home">
       <RestaurantListings

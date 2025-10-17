@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/src/lib/firebase/clientApp";
-
+// pull info from the database
 export async function updateRestaurantImageReference(
   restaurantId,
   publicImageUrl
@@ -27,7 +27,7 @@ export async function updateRestaurantImageReference(
     await updateDoc(restaurantRef, { photo: publicImageUrl });
   }
 }
-
+// update rendered user provided info
 const updateWithRating = async (
   transaction,
   docRef,
@@ -58,7 +58,7 @@ function applyQueryFilters(q, { category, city, price, sort }) {
   }
   return q;
 }
-
+// pull and sort resturant data from the db
 export async function getRestaurants(db = db, filters = {}) {
   let q = query(collection(db, "restaurants"));
 
@@ -75,7 +75,26 @@ export async function getRestaurants(db = db, filters = {}) {
 }
 
 export function getRestaurantsSnapshot(cb, filters = {}) {
-  return;
+  if (typeof cb !== "function") {
+    console.log("Error: The callback parameter is not a function");
+    return;
+  }
+
+  let q = query(collection(db, "restaurants"));
+  q = applyQueryFilters(q, filters);
+
+  return onSnapshot(q, (querySnapshot) => {
+    const results = querySnapshot.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+        // Only plain objects can be passed to Client Components from Server Components
+        timestamp: doc.data().timestamp.toDate(),
+      };
+    });
+
+    cb(results);
+  });
 }
 
 export async function getRestaurantById(db, restaurantId) {
